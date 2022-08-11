@@ -398,6 +398,7 @@ function Utility:CreateTab(Name, Icon)
 	local TabButton  = self.Objects.TabButton:Clone()
 	TabButton.Parent = self.MainUI.TabButtonHolder
 	TabButton.TitleLabel.Text = Name
+    TabButton.Image = Icon
 
 	local TabFrame  = self.Objects.TabFrame:Clone()
 	TabFrame.Name   = self:Random()
