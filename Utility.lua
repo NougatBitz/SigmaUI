@@ -198,10 +198,10 @@ function Utility:InitUI(MainFrame, Objects)
 	}
 
 	--// Reset UI to default
-	for i,v in TabHolder:GetChildren() do
+	for i,v in next, TabHolder:GetChildren() do
 		if v ~= SettingsHolder then
 			v.Visible = false
-			for _, UIElement in v:GetChildren() do
+			for _, UIElement in next, v:GetChildren() do
 				if UIElement:IsA("Frame") then
 					self:ToggleMainElement(UIElement, false)
 				end
@@ -274,7 +274,7 @@ function Utility:OpenTab(Tab, Title)
 
 	task.wait(0.2)
 
-	for _, UIElement in Tab:GetChildren() do
+	for _, UIElement in next, Tab:GetChildren() do
 		if UIElement:IsA("Frame") then
 			self:ToggleMainElement(UIElement, true)
 		end
@@ -284,7 +284,7 @@ function Utility:OpenTab(Tab, Title)
 end
 
 function Utility:CloseTab(Tab)
-	for _, UIElement in Tab:GetChildren() do
+	for _, UIElement in next, Tab:GetChildren() do
 		if UIElement:IsA("Frame") then
 			self:ToggleMainElement(UIElement, false)
 		end
@@ -323,7 +323,7 @@ function Utility:OpenSettings(SettingsFrame)
 	SettingsFrame.Visible = true
 	self.CurrentSettings = SettingsFrame
 
-	for _, UIElement in self.CurrentTab:GetChildren() do
+	for _, UIElement in next, self.CurrentTab:GetChildren() do
 		if UIElement:IsA("Frame") then
 			self:ToggleMainElement(UIElement, false)
 		end
@@ -335,7 +335,7 @@ end
 function Utility:CloseSettings()
 	TweenService:Create(self.CurrentSettings, TweenInfo.new(0.15), { Size = Sizes.SettingsFrame.Closed }):Play()
 
-	for _, UIElement in self.CurrentTab:GetChildren() do
+	for _, UIElement in next, self.CurrentTab:GetChildren() do
 		if UIElement:IsA("Frame") then
 			self:ToggleMainElement(UIElement, true)
 		end
