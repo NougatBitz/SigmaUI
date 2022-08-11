@@ -17,7 +17,7 @@ UserInputService.InputBegan:Connect(function(Input, GPE)
     end
 end)
 
-local Objects   = game:GetObjects("rbxassetid://10551224467")[1];
+local Objects   = game.GetObjects(game, "rbxassetid://10551224467")[1];
 
 local TabFunctions = {} do
     TabFunctions.__index = TabFunctions
