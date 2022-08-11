@@ -53,16 +53,17 @@ end
 
 local IsVisible = true;
 UserInputService.InputBegan:Connect(function(input, gme)
-    if not gme then
+   -- if not gme then
         if input.KeyCode == Enum.KeyCode.RightShift then
             IsVisible = not IsVisible
+            warn(IsVisible)
             if IsVisible then
                 SigmaUtil:ShowUI()
             else
                 SigmaUtil:HideMain()
             end
         end
-    end
+    --end
 end)
 
 return Sigma, SigmaUtil
