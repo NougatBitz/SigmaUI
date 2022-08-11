@@ -65,4 +65,4 @@ UserInputService.InputBegan:Connect(function(input, gme)
     end
 end)
 
-return Sigma
+return Sigma, SigmaUtil
