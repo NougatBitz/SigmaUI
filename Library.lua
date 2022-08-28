@@ -1,24 +1,4 @@
-local IsLocal = false
-
-local UserInputService = game:GetService("UserInputService")
-
-local Utility = (IsLocal and readfile("SigmaUI\\Utility.lua")) or game:HttpGet("https://raw.githubusercontent.com/NougatBitz/SigmaUI/main/Utility.lua")
-local SigmaUtil = loadstring(Utility)()
-
-local IsVisible = true
-UserInputService.InputBegan:Connect(function(Input, GPE)
-    if (not GPE) then
-        if Input.KeyCode == Enum.KeyCode.RightAlt then
-            IsVisible = not IsVisible
-
-            if IsVisible then
-                SigmaUtil:ShowUI()
-            else
-                SigmaUtil:HideMain()
-            end
-        end
-    end
-end)
+local SigmaUtil = loadstring(game:HttpGet("https://raw.githubusercontent.com/NougatBitz/SigmaUI/main/Utility.lua"))()
 
 local Objects = game.GetObjects(game, "rbxassetid://10551224467")[1] do
     local SpecialColors = {
@@ -94,5 +74,20 @@ local Sigma = {} do
         }, TabFunctions)
     end
 end
+
+local IsVisible = true
+game:GetService("UserInputService").InputBegan:Connect(function(Input, GPE)
+    if (not GPE) then
+        if Input.KeyCode == Enum.KeyCode.RightAlt then
+            IsVisible = not IsVisible
+
+            if IsVisible then
+                SigmaUtil:ShowUI()
+            else
+                SigmaUtil:HideMain()
+            end
+        end
+    end
+end)
 
 return Sigma, SigmaUtil
