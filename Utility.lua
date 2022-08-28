@@ -540,16 +540,17 @@ function Utility:AddListToHolder(List, Holder, Callback, Close)
 		end
 	end
 
-	for i,v in next, List do
+	for i,v in ipairs(List) do
 		local ListButton = self.Objects.ButtonItem:Clone()
 		ListButton.Parent = Holder
-
+        
 		ListButton.ZIndex = 1000
+        ListButton.LayoutOrder = i
 
-		ListButton.Text = i
+		ListButton.Text = v
 		ListButton.MouseButton1Down:Connect(function()
 			Callback(v)
-			Close(i,v)
+			Close(v)
 		end)
 	end
 end
@@ -571,6 +572,8 @@ function Utility.SettingsFunctions:Dropdown(Data)
 
 	local Trigger = NewDropdown.Trigger
 	local ItemHolder = Trigger.DropdownItemHolder
+
+    Trigger.Text = Data.List[1]
 
 	local CloseDropdown = function(index, value)
 		Trigger.Text = index
