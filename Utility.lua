@@ -519,7 +519,7 @@ function Utility:InitButton(ButtonFrame, Callback)
 end
 
 function Utility:CreateSettingsTab(ObjectFrame)
-	local ObjectName = ObjectFrame.TitleLabel.Text .. "'s Settings"
+	local ObjectName = ObjectFrame.TitleLabel.Text .. " Settings"
 
 	local NewSettingsFrame  = self.Objects.SettingsFrame:Clone()
 	NewSettingsFrame.Parent = self.MainUI.SettingsHolder
