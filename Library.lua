@@ -1,6 +1,9 @@
+local IsLocal = false
+
 local UserInputService = game:GetService("UserInputService")
 
-local SigmaUtil = loadstring(game.HttpGet(game, "https://raw.githubusercontent.com/NougatBitz/SigmaUI/main/Utility.lua"))()
+local Utility = (IsLocal and readfile("SigmaUI\\Utility.lua")) or game:HttpGet("https://raw.githubusercontent.com/NougatBitz/SigmaUI/main/Utility.lua")
+local SigmaUtil = loadstring(Utility)()
 
 local IsVisible = true
 UserInputService.InputBegan:Connect(function(Input, GPE)
@@ -17,7 +20,32 @@ UserInputService.InputBegan:Connect(function(Input, GPE)
     end
 end)
 
-local Objects   = game.GetObjects(game, "rbxassetid://10551224467")[1];
+local Objects = game.GetObjects(game, "rbxassetid://10551224467")[1] do
+    local SpecialColors = {
+        ["SettingsFrame"] = Color3.fromRGB(15, 15, 15);
+        ["ToggleIndicator"] = Color3.fromRGB(33, 33, 33);
+        ["BackgroundFrame"] = Color3.fromRGB(5, 5, 5);
+    }
+    
+    function InvertColor(color)
+        return Color3.new(1 - color.R, 1 - color.G, 1 - color.B)
+    end
+
+    local CachedProperties = {}
+    for i,v in next, Objects:GetDescendants() do
+        local Properties = CachedProperties[v.ClassName] or getproperties(v)
+        
+        if (not CachedProperties[v.ClassName]) then
+            CachedProperties[v.ClassName] = Properties
+        end
+        
+        for i2,v2 in next, Properties do
+            if i2:find("Color3") then
+                v[i2] = SpecialColors[v.Name] or InvertColor(v2)
+            end
+        end
+    end
+end
 
 local TabFunctions = {} do
     TabFunctions.__index = TabFunctions
