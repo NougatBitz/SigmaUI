@@ -1,4 +1,7 @@
-local SigmaUtil = loadstring(game:HttpGet("https://raw.githubusercontent.com/NougatBitz/SigmaUI/main/Utility.lua"))()
+local IsLocal = false
+
+local Utility = (IsLocal and readfile("SigmaUI\\Utility.lua")) or game:HttpGet("https://raw.githubusercontent.com/NougatBitz/SigmaUI/main/Utility.lua")
+local SigmaUtil = loadstring(Utility)()
 
 local Objects = game.GetObjects(game, "rbxassetid://10551224467")[1] do
     local SpecialColors = {
