@@ -60,13 +60,27 @@ function Utility:ConvertToLightColor(color)
 end;
 
 function Utility:HoverEffect(Trigger, Object, Property)
-	Trigger.MouseEnter:Connect(function()
-		Object[Property] = self:ConvertToLightColor(Object[Property])
-	end)
+	if typeof(Object) == "Instance" then 
+		Trigger.MouseEnter:Connect(function()
+			Object[Property] = self:ConvertToLightColor(Object[Property])
+		end)
 
-	Trigger.MouseLeave:Connect(function()
-		Object[Property] = self:ConvertToDarkColor(Object[Property])
-	end)
+		Trigger.MouseLeave:Connect(function()
+			Object[Property] = self:ConvertToDarkColor(Object[Property])
+		end)
+	elseif typeof(Object) == "table" then
+		Trigger.MouseEnter:Connect(function()
+			for _, v in next, Object do 
+				v[Property[v.Name]] = self:ConvertToLightColor( v[ Property[v.Name] ] )
+			end
+		end)
+
+		Trigger.MouseLeave:Connect(function()
+			for _, v in next, Object do 
+				v[Property[v.Name]] = self:ConvertToDarkColor( v[ Property[v.Name] ] )
+			end
+		end)
+	end
 end
 
 function Utility:Random()
@@ -105,7 +119,7 @@ function Utility:GetCanvasSize(Frame, EachRow)
 	else
 		local YSize = 0
 		for i,v in next, Frame:GetChildren() do
-			if v:IsA("GuiBase") then
+			if v:IsA("GuiBase") and v.Name ~= "RoundingFrame" then
 				YSize = YSize + v.AbsoluteSize.Y
 			end
 		end
@@ -177,7 +191,7 @@ function Utility:TweenLabel(Label, Text)
 	TweenService:Create(Label, TweenInfo.new(0.25, Enum.EasingStyle.Circular), { TextTransparency = 0 }):Play()
 end
 
-function Utility:InitUI(MainFrame, Objects)
+function Utility:InitUI(MainFrame, Objects, Properties)
 	self.Objects = Objects
 	local BackgroundFrame 	= MainFrame.BackgroundFrame
 	local TitleLabel 		= MainFrame.TitleLabel
@@ -196,6 +210,7 @@ function Utility:InitUI(MainFrame, Objects)
 		BackButton 		= BackButton;
 		SettingsHolder 	= SettingsHolder;
 	}
+	self.MainTitle = Properties and Properties["Title"]
 
 	--// Reset UI to default
 	for i,v in next, TabHolder:GetChildren() do
@@ -231,6 +246,7 @@ function Utility:InitUI(MainFrame, Objects)
 	})
 
 	--// Connections
+	Utility:HoverEffect(BackButton, BackButton, "ImageColor3")
 	BackButton.MouseButton1Click:Connect(function()
 		if self.CurrentSettings then
 			Utility:CloseSettings()
@@ -295,7 +311,7 @@ function Utility:CloseTab(Tab)
 
 	self.MainUI.TabHolder.Size = Sizes.TabHolder.OnMenu
 
-	self:TweenLabel(self.MainUI.TitleLabel, "Main Menu")
+	self:TweenLabel(self.MainUI.TitleLabel, self.MainTitle or "Main Menu")
 
 	self:TweenProperties(self.MainUI.TabButtonHolder:GetDescendants(), {
 		["TabButton"] = {
@@ -345,7 +361,7 @@ function Utility:CloseSettings()
 end
 
 function Utility:ShowUI()
-	self:TweenLabel(self.MainUI.TitleLabel, "Main Menu")
+	self:TweenLabel(self.MainUI.TitleLabel, self.MainTitle or "Main Menu")
 
 	TweenService:Create(self.MainUI.BackgroundFrame, TweenInfo.new(0.25, Enum.EasingStyle.Circular), { BackgroundTransparency = 0.15 }):Play()
 	TweenService:Create(self.MainUI.BackgroundFrame, TweenInfo.new(0.25, Enum.EasingStyle.Circular), { Size = Sizes.BackgroundFrame.OnMenu }):Play()
@@ -406,9 +422,12 @@ function Utility:CreateTab(Name, Icon)
 	TabFrame.Visible = false
 	TabFrame.ScrollBarThickness = 0
 
+	Utility:HoverEffect(TabButton, TabButton, "ImageColor3")
+
 	TabButton.MouseButton1Click:Connect(function()
 		self:OpenTab(TabFrame, Name)
 	end)
+	
 
 	self.Tabs[TabButton] = {
 		Frame = TabFrame;
@@ -664,6 +683,40 @@ function Utility.SettingsFunctions:Slider(Data)
 			TitleLabel.Text = string.format("%s: %s", Data.Title, Data.Value)
 		end;
 	end);
+end
+
+function Utility:AddDrag(Object)
+	local LocalMouse = game:GetService("Players").LocalPlayer:GetMouse()
+	local Heartbeat  = RunService.Heartbeat
+	Object.Active = true
+
+	Object.MouseEnter:Connect(function()
+		local InputBegan = Object.InputBegan:Connect(function(Input)
+			if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+				local StartInput = Vector2.new(
+					LocalMouse.X - Object.AbsolutePosition.X,
+					LocalMouse.Y - Object.AbsolutePosition.Y
+				)
+
+				while UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
+					Object:TweenPosition(UDim2.new(
+						0, 
+						(LocalMouse.X - StartInput.X) + Object.AbsoluteSize.X / 2, 
+						0, 
+						(LocalMouse.Y - StartInput.Y) + Object.AbsoluteSize.Y / 2
+					), "Out", "Linear", 0.01, true)
+
+					Heartbeat:Wait()
+				end
+			end
+		end)
+
+		local MouseLeave; 
+		MouseLeave = Object.MouseLeave:Connect(function()
+			InputBegan:Disconnect()
+			MouseLeave:Disconnect()
+		end)
+	end)
 end
 
 return Utility
