@@ -154,4 +154,12 @@ game:GetService("UserInputService").InputBegan:Connect(function(Input, GPE)
     end
 end)
 
+Sigma.Icons = {
+    Combat   = "rbxassetid://10401329089";
+    Movement = "rbxassetid://10403468113";
+    Visuals  = "rbxassetid://10403490626";
+    Settings = "rbxassetid://10403508076";
+    Others   = "rbxassetid://10403543022";
+};
+
 return Sigma, SigmaUtil
