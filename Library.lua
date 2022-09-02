@@ -124,9 +124,8 @@ local Sigma = {} do
         local MainFrame = Objects.MainFrame:Clone() do
             MainFrame.Parent = ScreenGui
         end
-        table.foreach(SigmaUtil, warn)
+        
         SigmaUtil:AddDrag(MainFrame)
-
         SigmaUtil:InitUI(MainFrame, Objects, {
             Title = Name;
         })
